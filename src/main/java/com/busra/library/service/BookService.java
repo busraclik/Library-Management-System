@@ -1,12 +1,13 @@
 package com.busra.library.service;
 
 import com.busra.library.model.dto.BookDTO;
-import com.busra.library.model.entity.Book;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface BookService {
-    List<BookDTO> getAllBooks();
+    //List<BookDTO> getAllBooks();
+
+    Page<BookDTO> getAllBooks(Pageable pageable);
 
     BookDTO getBookByTitle(String title);
 
@@ -21,4 +22,6 @@ public interface BookService {
     BookDTO updateBook(Long id, BookDTO bookDTO);
 
     void deleteBookById(Long id);
+
+    BookDTO getBookById(Long id);
 }

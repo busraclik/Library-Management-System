@@ -5,10 +5,10 @@ import com.busra.library.model.entity.Book;
 import com.busra.library.model.mapper.BookMapper;
 import com.busra.library.repository.BookRepository;
 import com.busra.library.service.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -21,12 +21,26 @@ public class BookServiceImpl implements BookService {
         this.bookMapper = bookMapper;
     }
 
+//    @Override
+//    public List<BookDTO> getAllBooks() {
+//        return bookRepository.findAll()
+//                .stream()
+//                .map(bookMapper::bookToBookDTO)
+//                .collect(Collectors.toList());
+//    }
+
     @Override
-    public List<BookDTO> getAllBooks() {
-        return bookRepository.findAll()
-                .stream()
-                .map(bookMapper::bookToBookDTO)
-                .collect(Collectors.toList());
+    public Page<BookDTO> getAllBooks(Pageable pageable) {
+        return bookRepository.findAll(pageable)
+                .map(bookMapper::bookToBookDTO);
+    }
+
+
+    @Override
+    public BookDTO getBookById(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found with id: " + id));
+        return bookMapper.bookToBookDTO(book);
     }
 
     @Override
@@ -72,5 +86,6 @@ public class BookServiceImpl implements BookService {
     public void deleteBookById(Long id) {
         bookRepository.deleteById(id);
     }
+
 
 }
