@@ -30,7 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
         User user = User.builder().userName(userDTO.getUserName())
                 .password(encodedPassword).nameSurname(userDTO.getNameSurname())
-                .role(Role.LIBRARIAN).build();
+                .role(userDTO.getRole()).build();
 
         userRepository.save(user);
 
