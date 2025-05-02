@@ -1,7 +1,6 @@
 package com.busra.library.controller;
 
 import com.busra.library.model.dto.BookDTO;
-import com.busra.library.model.entity.Book;
 import com.busra.library.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -28,10 +27,6 @@ public class BookController {
         return new ResponseEntity<>(bookService.createNewBook(bookDTO), HttpStatus.CREATED);
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<BookDTO>> getAllBooks(){
-//        return new ResponseEntity<>(bookService.getAllBooks(), HttpStatus.OK);
-//    }
 
     @GetMapping
     public ResponseEntity<Page<BookDTO>> getAllBooks(
@@ -48,25 +43,10 @@ public class BookController {
         return new ResponseEntity<BookDTO>(bookService.getBookById(id), HttpStatus.OK);
     }
 
-//    @GetMapping("/title/{title}")
-//    public ResponseEntity<BookDTO> getBookByTitle(@PathVariable String title){
-//        return new ResponseEntity<>(
-//                bookService.getBookByTitle(title), HttpStatus.OK);
-//    }
-
-//    @GetMapping("/search/title")
-//    @PreAuthorize("hasAnyRole('LIBRARIAN', 'PATRON')")
-//    public ResponseEntity<Page<Book>> searchBooks(
-//            @RequestParam String title,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size) {
-//        Page<Book> result = bookService.searchBooks(title, page, size);
-//        return ResponseEntity.ok(result);
-//    }
 
     @GetMapping("/search/title")
     @PreAuthorize("hasAnyRole('LIBRARIAN', 'PATRON')")
-    public ResponseEntity<Page<BookDTO>> searchBooks(
+    public ResponseEntity<Page<BookDTO>> searchBooksByTitle(
             @RequestParam String title,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
@@ -74,53 +54,34 @@ public class BookController {
         return ResponseEntity.ok(result);
     }
 
-
-
-//    @GetMapping("/author/{author}")
-//    public ResponseEntity<BookDTO> getBookByAuthor(@PathVariable String author){
-//        return new ResponseEntity<>(
-//                bookService.getBookByAuthor(author), HttpStatus.OK);
-//    }
-
     @GetMapping("/search/author")
     @PreAuthorize("hasAnyRole('LIBRARIAN', 'PATRON')")
-    public ResponseEntity<Page<Book>> searchBooksByAuthor(
+    public ResponseEntity<Page<BookDTO>> searchBooksByAuthor(
             @RequestParam String author,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<Book> result = bookService.searchBookByAuthor(author, page, size);
+        Page<BookDTO> result = bookService.searchBookByAuthor(author, page, size);
         return ResponseEntity.ok(result);
     }
-
-//    @GetMapping("/isbn/{isbn}")
-//    public ResponseEntity<BookDTO> getBookByIsbn(@PathVariable String isbn){
-//        return new ResponseEntity<>(
-//                bookService.getBookByIsbn(isbn), HttpStatus.OK);
-//    }
 
     @GetMapping("/search/isbn")
     @PreAuthorize("hasAnyRole('LIBRARIAN', 'PATRON')")
-    public ResponseEntity<Page<Book>> searchBooksByIsbn(
+    public ResponseEntity<Page<BookDTO>> searchBooksByIsbn(
             @RequestParam String isbn,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<Book> result = bookService.searchBookByIsbn(isbn, page, size);
+        Page<BookDTO> result = bookService.searchBookByIsbn(isbn, page, size);
         return ResponseEntity.ok(result);
     }
 
-//    @GetMapping("/genre/{genre}")
-//    public ResponseEntity<BookDTO> getBookByGenre(@PathVariable String genre){
-//        return new ResponseEntity<>(
-//                bookService.getBookByGenre(genre), HttpStatus.OK);
-//    }
 
     @GetMapping("/search/genre")
     @PreAuthorize("hasAnyRole('LIBRARIAN', 'PATRON')")
-    public ResponseEntity<Page<Book>> searchBooksByGenre(
+    public ResponseEntity<Page<BookDTO>> searchBooksByGenre(
             @RequestParam String genre,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<Book> result = bookService.searchBookByIsbn(genre, page, size);
+        Page<BookDTO> result = bookService.searchBookByGenre(genre, page, size);
         return ResponseEntity.ok(result);
     }
 

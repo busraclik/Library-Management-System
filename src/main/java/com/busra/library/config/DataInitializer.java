@@ -48,7 +48,7 @@ public class DataInitializer implements CommandLineRunner {
                         .title("Book " + i)
                         .author("Author " + i)
                         .isbn("ISBN00" + i)
-                        .genre("Genre " + i)
+                        .genre("Genre" + i)
                         .publishedDate(LocalDateTime.now().minusYears(i))
                         .build();
                 bookRepository.save(book);

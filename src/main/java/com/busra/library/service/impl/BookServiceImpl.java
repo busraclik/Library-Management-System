@@ -22,14 +22,6 @@ public class BookServiceImpl implements BookService {
         this.bookMapper = bookMapper;
     }
 
-//    @Override
-//    public List<BookDTO> getAllBooks() {
-//        return bookRepository.findAll()
-//                .stream()
-//                .map(bookMapper::bookToBookDTO)
-//                .collect(Collectors.toList());
-//    }
-
     @Override
     public Page<BookDTO> getAllBooks(Pageable pageable) {
         return bookRepository.findAll(pageable)
@@ -44,54 +36,31 @@ public class BookServiceImpl implements BookService {
         return bookMapper.bookToBookDTO(book);
     }
 
-//    @Override
-//    public BookDTO getBookByTitle(String title) {
-//        return bookMapper.bookToBookDTO(bookRepository.findByTitle(title));
-//    }
-
-//    public Page<Book> searchBooks(String title, int page, int size) {
-//        Pageable pageable = PageRequest.of(page, size);
-//        return bookRepository.findByTitleContainingIgnoreCase(title, pageable);
-//    }
-
     public Page<BookDTO> searchBookByTitle(String title, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Book> books = bookRepository.findByTitleContainingIgnoreCase(title, pageable);
         return books.map(bookMapper::bookToBookDTO);
     }
 
-
-//    @Override
-//    public BookDTO getBookByAuthor(String author) {
-//        return bookMapper.bookToBookDTO(bookRepository.findByAuthor(author));
-//    }
-
     @Override
-    public Page<Book> searchBookByAuthor(String author, int page, int size) {
+    public Page<BookDTO> searchBookByAuthor(String author, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return bookRepository.findByAuthorContainingIgnoreCase(author, pageable);
+        Page<Book> books = bookRepository.findByAuthorContainingIgnoreCase(author, pageable);
+        return books.map(bookMapper::bookToBookDTO);
     }
 
-//    @Override
-//    public BookDTO getBookByIsbn(String isbn) {
-//        return bookMapper.bookToBookDTO(bookRepository.findByIsbn(isbn));
-//    }
-
     @Override
-    public Page<Book> searchBookByIsbn(String isbn, int page, int size) {
+    public Page<BookDTO> searchBookByIsbn(String isbn, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return bookRepository.findByIsbnContainingIgnoreCase(isbn, pageable);
+        Page<Book> books = bookRepository.findByIsbnContainingIgnoreCase(isbn, pageable);
+        return books.map(bookMapper::bookToBookDTO);
     }
 
-//    @Override
-//    public BookDTO getBookByGenre(String genre) {
-//        return bookMapper.bookToBookDTO(bookRepository.findByGenre(genre));
-//    }
-
     @Override
-    public Page<Book> searchBookByGenre(String genre, int page, int size) {
+    public Page<BookDTO> searchBookByGenre(String genre, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return bookRepository.findByGenreContainingIgnoreCase(genre, pageable);
+        Page<Book> books = bookRepository.findByGenreContainingIgnoreCase(genre, pageable);
+        return books.map(bookMapper::bookToBookDTO);
     }
 
 
