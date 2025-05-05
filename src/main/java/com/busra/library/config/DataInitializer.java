@@ -24,17 +24,17 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) {
         if (userRepository.count() == 0) {
             User librarian = User.builder()
-                    .nameSurname("Busra Celik")
-                    .userName("busracelik")
+                    .nameSurname("Librarian Celik")
+                    .username("librarianuser")
                     .password(passwordEncoder.encode("password123"))
-                    .email("busracelik@example.com")
+                    .email("librarian@example.com")
                     .role(Role.LIBRARIAN)
                     .build();
             userRepository.save(librarian);
 
             User patron = User.builder()
                     .nameSurname("Patron User")
-                    .userName("patronuser")
+                    .username("patronuser")
                     .password(passwordEncoder.encode("password123"))
                     .email("patron@example.com")
                     .role(Role.PATRON)

@@ -4,7 +4,6 @@ import com.busra.library.model.dto.UserDTO;
 import com.busra.library.model.dto.UserRequest;
 import com.busra.library.model.dto.UserResponse;
 import com.busra.library.model.entity.User;
-import com.busra.library.model.enums.Role;
 import com.busra.library.repository.UserRepository;
 import com.busra.library.service.AuthenticationService;
 import com.busra.library.service.JwtService;
@@ -28,7 +27,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public UserResponse save(UserDTO userDTO) {
         String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
-        User user = User.builder().userName(userDTO.getUserName())
+        User user = User.builder().username(userDTO.getUsername())
                 .password(encodedPassword).nameSurname(userDTO.getNameSurname())
                 .role(userDTO.getRole()).build();
 
@@ -41,8 +40,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public UserResponse auth(UserRequest userRequest) {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userRequest.getUserName(), userRequest.getPassword()));
-            User user = userRepository.findByUserName(userRequest.getUserName()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userRequest.getUsername(), userRequest.getPassword()));
+            User user = userRepository.findByUsername(userRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
             String token = jwtService.generateToken(user);
             return UserResponse.builder().token(token).build();
         }catch (Exception e) {

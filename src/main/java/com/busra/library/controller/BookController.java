@@ -45,7 +45,8 @@ public class BookController {
 
 
     @GetMapping("/search/title")
-    @PreAuthorize("hasAnyRole('LIBRARIAN', 'PATRON')")
+    //@PreAuthorize("hasAnyRole('LIBRARIAN', 'PATRON')")
+    @PreAuthorize("hasAnyAuthority('ROLE_LIBRARIAN', 'ROLE_PATRON')")
     public ResponseEntity<Page<BookDTO>> searchBooksByTitle(
             @RequestParam String title,
             @RequestParam(defaultValue = "0") int page,
@@ -55,7 +56,8 @@ public class BookController {
     }
 
     @GetMapping("/search/author")
-    @PreAuthorize("hasAnyRole('LIBRARIAN', 'PATRON')")
+    //@PreAuthorize("hasAnyRole('LIBRARIAN', 'PATRON')")
+    @PreAuthorize("hasAnyAuthority('ROLE_LIBRARIAN', 'ROLE_PATRON')")
     public ResponseEntity<Page<BookDTO>> searchBooksByAuthor(
             @RequestParam String author,
             @RequestParam(defaultValue = "0") int page,
@@ -65,7 +67,8 @@ public class BookController {
     }
 
     @GetMapping("/search/isbn")
-    @PreAuthorize("hasAnyRole('LIBRARIAN', 'PATRON')")
+    //@PreAuthorize("hasAnyRole('LIBRARIAN', 'PATRON')")
+    @PreAuthorize("hasAnyAuthority('ROLE_LIBRARIAN', 'ROLE_PATRON')")
     public ResponseEntity<Page<BookDTO>> searchBooksByIsbn(
             @RequestParam String isbn,
             @RequestParam(defaultValue = "0") int page,
@@ -76,7 +79,8 @@ public class BookController {
 
 
     @GetMapping("/search/genre")
-    @PreAuthorize("hasAnyRole('LIBRARIAN', 'PATRON')")
+    //@PreAuthorize("hasAnyRole('LIBRARIAN', 'PATRON')")
+    @PreAuthorize("hasAnyAuthority('ROLE_LIBRARIAN', 'ROLE_PATRON')")
     public ResponseEntity<Page<BookDTO>> searchBooksByGenre(
             @RequestParam String genre,
             @RequestParam(defaultValue = "0") int page,

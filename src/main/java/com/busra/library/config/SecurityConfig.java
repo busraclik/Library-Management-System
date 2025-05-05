@@ -26,15 +26,11 @@ public class SecurityConfig {
 
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/login/**").permitAll()
-//                        .requestMatchers("/api/books/**").authenticated()
-//                        .anyRequest().authenticated()
-//                )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/books/**").hasAnyRole("LIBRARIAN", "PATRON")
-                        .requestMatchers("/api/books/**").hasRole("LIBRARIAN")
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/books/**").hasAnyAuthority("ROLE_LIBRARIAN", "ROLE_PATRON")
+                        .requestMatchers("/api/books/**").hasAuthority("ROLE_LIBRARIAN")
+                        .requestMatchers("/api/users/**").hasAuthority("ROLE_LIBRARIAN")
                         .anyRequest().authenticated()
                 )
 
