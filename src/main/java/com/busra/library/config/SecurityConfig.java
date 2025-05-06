@@ -31,6 +31,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/books/**").hasAnyAuthority("ROLE_LIBRARIAN", "ROLE_PATRON")
                         .requestMatchers("/api/books/**").hasAuthority("ROLE_LIBRARIAN")
                         .requestMatchers("/api/users/**").hasAuthority("ROLE_LIBRARIAN")
+                        .requestMatchers("/api/borrows/overdue").hasAuthority("ROLE_LIBRARIAN")
+                        .requestMatchers("/api/borrows/history").hasAnyAuthority("ROLE_LIBRARIAN", "ROLE_PATRON")
+                        .requestMatchers("/api/borrows").hasAuthority("ROLE_PATRON")
+                        .requestMatchers("/api/borrows/return").hasAuthority("ROLE_PATRON")
                         .anyRequest().authenticated()
                 )
 

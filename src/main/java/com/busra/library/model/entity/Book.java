@@ -33,4 +33,7 @@ public class Book {
 
     @Column(name = "genre")
     private String genre;
+
+    @Column(name = "available")
+    private boolean available = true;
 }

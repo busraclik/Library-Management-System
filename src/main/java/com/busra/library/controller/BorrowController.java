@@ -1,0 +1,101 @@
+package com.busra.library.controller;
+
+import com.busra.library.model.entity.Borrow;
+import com.busra.library.model.entity.User;
+import com.busra.library.model.enums.Role;
+import com.busra.library.service.BorrowService;
+import com.busra.library.service.UserService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/borrows")
+public class BorrowController {
+
+
+    private final BorrowService borrowService;
+    private final UserService userService;
+
+    public BorrowController(BorrowService borrowService, UserService userService) {
+        this.borrowService = borrowService;
+        this.userService = userService;
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_PATRON')")
+    @PostMapping
+    public ResponseEntity<String> borrowBook(@RequestParam Long userId, @RequestParam Long bookId) {
+        String result = borrowService.borrowBook(userId, bookId);
+        return ResponseEntity.ok(result);
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_PATRON')")
+    @PostMapping("/return")
+    public ResponseEntity<String> returnBook(@RequestParam Long userId, @RequestParam Long bookId) {
+        String result = borrowService.returnBook(userId, bookId);
+        return ResponseEntity.ok(result);
+    }
+
+//    @PreAuthorize("hasAnyAuthority('ROLE_LIBRARIAN', 'ROLE_PATRON')")
+//    @GetMapping("/history")
+//    public ResponseEntity<List<Borrow>> getUserBorrowingHistory(@RequestParam Long userId) {
+//        List<Borrow> borrowings = borrowService.getUserBorrowHistory(userId);
+//        return ResponseEntity.ok(borrowings);
+//    }
+
+//    @GetMapping("/history")
+//    @PreAuthorize("hasAnyAuthority('ROLE_LIBRARIAN', 'ROLE_PATRON')")
+//    public ResponseEntity<List<Borrow>> getUserBorrowingHistory(
+//            @RequestParam(required = false) Long userId,
+//            Authentication authentication
+//    ) {
+//        String currentUsername = authentication.getName();
+//        Optional<User> currentUser = userService.findByUsername(currentUsername);
+//
+//        if (currentUser.get().getRole().equals(Role.PATRON)) {
+//            // Patron kendi geçmişini görebilir
+//            userId = currentUser.get().getId();
+//        }
+//
+//        List<Borrow> borrowings = borrowService.getUserBorrowHistory(userId);
+//        return ResponseEntity.ok(borrowings);
+//    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_LIBRARIAN', 'ROLE_PATRON')")
+    @GetMapping("/history")
+    public ResponseEntity<List<Borrow>> getUserBorrowingHistory(
+            @RequestParam Long userId,
+            Authentication authentication
+    ) {
+        String currentUsername = authentication.getName();
+
+        // Kullanıcıyı veritabanından çekiyoruz
+        User currentUser = userService.findByUsername(currentUsername)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        // Eğer kullanıcı PATRON ise sadece kendi geçmişini görüntüleyebilir
+        if (currentUser.getRole().equals(Role.PATRON) && !currentUser.getId().equals(userId)) {
+            return ResponseEntity.status(403).build(); // Forbidden
+        }
+
+        List<Borrow> borrowings = borrowService.getUserBorrowHistory(userId);
+        return ResponseEntity.ok(borrowings);
+    }
+
+
+
+
+    @PreAuthorize("hasAuthority('ROLE_LIBRARIAN')")
+    @GetMapping("/overdue")
+    public ResponseEntity<List<Borrow>> getOverdueBooks() {
+        List<Borrow> overdueBooks = borrowService.getOverdueBooks();
+        return ResponseEntity.ok(overdueBooks);
+    }
+
+
+}

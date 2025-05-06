@@ -19,30 +19,29 @@ import java.util.function.Function;
 @Service
 public class JwtServiceImpl implements JwtService {
 
-      @Value("${security.jwt.secret}")
-      private String SECRET_KEY;
+    @Value("${security.jwt.secret}")
+    private String SECRET_KEY;
 
     @Override
     public String findUsername(String token) {
         return exportToken(token, Claims::getSubject);
     }
 
-
-    private <T> T exportToken(java.lang.String token, Function<Claims, T> claimsTFunction){
+    private <T> T exportToken(java.lang.String token, Function<Claims, T> claimsTFunction) {
         final Claims claims = Jwts.parserBuilder().setSigningKey(getKey())
                 .build().parseClaimsJws(token).getBody();
         return claimsTFunction.apply(claims);
     }
 
-    private Key getKey(){
+    private Key getKey() {
         byte[] key = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(key);
     }
 
     @Override
     public boolean tokenControl(String jwt, UserDetails userDetails) {
-        final String username=findUsername(jwt);
-        return (username.equals(userDetails.getUsername()) && !exportToken(jwt,Claims::getExpiration).before(new Date()));
+        final String username = findUsername(jwt);
+        return (username.equals(userDetails.getUsername()) && !exportToken(jwt, Claims::getExpiration).before(new Date()));
     }
 
     //ekledim
@@ -63,7 +62,7 @@ public class JwtServiceImpl implements JwtService {
         return Jwts.builder().setClaims(claims)
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24 ))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

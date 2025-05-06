@@ -27,4 +27,6 @@ public class BookDTO {
 
     @NotBlank(message = "Genre is required")
     private String genre;
+
+    private boolean available;
 }
