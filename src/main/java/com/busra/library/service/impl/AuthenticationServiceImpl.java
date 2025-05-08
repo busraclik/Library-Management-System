@@ -1,8 +1,8 @@
 package com.busra.library.service.impl;
 
-import com.busra.library.model.dto.UserDTO;
-import com.busra.library.model.dto.UserRequest;
-import com.busra.library.model.dto.UserResponse;
+import com.busra.library.model.dto.UserRequestDTO;
+import com.busra.library.model.dto.request.UserRequest;
+import com.busra.library.model.dto.response.UserResponse;
 import com.busra.library.model.entity.User;
 import com.busra.library.repository.UserRepository;
 import com.busra.library.service.AuthenticationService;
@@ -25,11 +25,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     @Override
-    public UserResponse save(UserDTO userDTO) {
-        String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
-        User user = User.builder().username(userDTO.getUsername())
-                .password(encodedPassword).nameSurname(userDTO.getNameSurname())
-                .role(userDTO.getRole()).build();
+    public UserResponse save(UserRequestDTO userRequestDTO) {
+        String encodedPassword = passwordEncoder.encode(userRequestDTO.getPassword());
+        User user = User.builder().username(userRequestDTO.getUsername())
+                .password(encodedPassword).nameSurname(userRequestDTO.getNameSurname())
+                .role(userRequestDTO.getRole()).build();
 
         userRepository.save(user);
 

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
+public class UserRequestDTO {
 
     @NotBlank(message = "Name and surname name is required")
     private String nameSurname;

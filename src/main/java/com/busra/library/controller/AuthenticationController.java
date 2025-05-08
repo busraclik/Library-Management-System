@@ -1,8 +1,8 @@
 package com.busra.library.controller;
 
-import com.busra.library.model.dto.UserDTO;
-import com.busra.library.model.dto.UserRequest;
-import com.busra.library.model.dto.UserResponse;
+import com.busra.library.model.dto.UserRequestDTO;
+import com.busra.library.model.dto.request.UserRequest;
+import com.busra.library.model.dto.response.UserResponse;
 import com.busra.library.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +20,8 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> save(@Valid @RequestBody UserDTO userDTO){
-        return ResponseEntity.ok(authenticationService.save(userDTO));
+    public ResponseEntity<UserResponse> save(@Valid @RequestBody UserRequestDTO userRequestDTO){
+        return ResponseEntity.ok(authenticationService.save(userRequestDTO));
     }
 
     @PostMapping("/login")

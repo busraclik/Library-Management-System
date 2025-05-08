@@ -28,7 +28,7 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) {
         if (userRepository.count() == 0) {
             User librarian = User.builder()
-                    .nameSurname("Librarian Celik")
+                    .nameSurname("Librarian User")
                     .username("librarianuser")
                     .password(passwordEncoder.encode("password123"))
                     .email("librarian@example.com")
@@ -47,13 +47,26 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         if (bookRepository.count() == 0) {
-            for (int i = 1; i <= 10; i++) {
+            String[][] sampleBooks = {
+                    {"The Silent Patient", "Alex Michaelides", "9781250301697", "Thriller"},
+                    {"Educated", "Tara Westover", "9780399590504", "Memoir"},
+                    {"The Midnight Library", "Matt Haig", "9780525559474", "Fantasy"},
+                    {"Becoming", "Michelle Obama", "9781524763138", "Biography"},
+                    {"Where the Crawdads Sing", "Delia Owens", "9780735219106", "Mystery"},
+                    {"Atomic Habits", "James Clear", "9780735211292", "Self-help"},
+                    {"Sapiens", "Yuval Noah Harari", "9780062316097", "History"},
+                    {"The Alchemist", "Paulo Coelho", "9780061122415", "Fiction"},
+                    {"The Subtle Art of Not Giving a F*ck", "Mark Manson", "9780062457714", "Self-help"},
+                    {"Normal People", "Sally Rooney", "9780571334650", "Drama"}
+            };
+
+            for (int i = 0; i < sampleBooks.length; i++) {
                 Book book = Book.builder()
-                        .title("Book " + i)
-                        .author("Author " + i)
-                        .isbn("ISBN00" + i)
-                        .genre("Genre" + i)
-                        .publishedDate(LocalDateTime.now().minusYears(i))
+                        .title(sampleBooks[i][0])
+                        .author(sampleBooks[i][1])
+                        .isbn(sampleBooks[i][2])
+                        .genre(sampleBooks[i][3])
+                        .publishedDate(LocalDateTime.now().minusYears(2 + i)) // geçmişe göre yayım tarihi
                         .available(true)
                         .build();
                 bookRepository.save(book);
@@ -63,18 +76,22 @@ public class DataInitializer implements CommandLineRunner {
 
         if (borrowRepository.count() == 0) {
             User user = userRepository.findByUsername("patronuser").orElseThrow();
-            Book book = bookRepository.findAll().get(0); // ilk kitabı al
+            Book book = bookRepository.findAll().get(0);
+
+            book.setAvailable(false);
+            bookRepository.save(book);
 
             Borrow borrow = Borrow.builder()
                     .user(user)
                     .book(book)
                     .borrowDate(LocalDate.from(LocalDateTime.now().minusDays(20)))
-                    .dueDate(LocalDate.from(LocalDateTime.now().minusDays(6))) // geç kalınmış tarih
+                    .dueDate(LocalDate.from(LocalDateTime.now().minusDays(6)))
                     .returned(false)
                     .build();
 
             borrowRepository.save(borrow);
-
         }
+
+
     }
 }

@@ -1,5 +1,6 @@
 package com.busra.library.controller;
 
+import com.busra.library.model.dto.BorrowDTO;
 import com.busra.library.model.entity.Borrow;
 import com.busra.library.model.entity.User;
 import com.busra.library.model.enums.Role;
@@ -12,7 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/api/borrows")
@@ -41,34 +42,10 @@ public class BorrowController {
         return ResponseEntity.ok(result);
     }
 
-//    @PreAuthorize("hasAnyAuthority('ROLE_LIBRARIAN', 'ROLE_PATRON')")
-//    @GetMapping("/history")
-//    public ResponseEntity<List<Borrow>> getUserBorrowingHistory(@RequestParam Long userId) {
-//        List<Borrow> borrowings = borrowService.getUserBorrowHistory(userId);
-//        return ResponseEntity.ok(borrowings);
-//    }
-
-//    @GetMapping("/history")
-//    @PreAuthorize("hasAnyAuthority('ROLE_LIBRARIAN', 'ROLE_PATRON')")
-//    public ResponseEntity<List<Borrow>> getUserBorrowingHistory(
-//            @RequestParam(required = false) Long userId,
-//            Authentication authentication
-//    ) {
-//        String currentUsername = authentication.getName();
-//        Optional<User> currentUser = userService.findByUsername(currentUsername);
-//
-//        if (currentUser.get().getRole().equals(Role.PATRON)) {
-//            // Patron kendi geçmişini görebilir
-//            userId = currentUser.get().getId();
-//        }
-//
-//        List<Borrow> borrowings = borrowService.getUserBorrowHistory(userId);
-//        return ResponseEntity.ok(borrowings);
-//    }
 
     @PreAuthorize("hasAnyAuthority('ROLE_LIBRARIAN', 'ROLE_PATRON')")
     @GetMapping("/history")
-    public ResponseEntity<List<Borrow>> getUserBorrowingHistory(
+    public ResponseEntity<List<BorrowDTO>> getUserBorrowingHistory(
             @RequestParam Long userId,
             Authentication authentication
     ) {
@@ -80,20 +57,17 @@ public class BorrowController {
 
         // Eğer kullanıcı PATRON ise sadece kendi geçmişini görüntüleyebilir
         if (currentUser.getRole().equals(Role.PATRON) && !currentUser.getId().equals(userId)) {
-            return ResponseEntity.status(403).build(); // Forbidden
+            return ResponseEntity.status(403).build();
         }
 
-        List<Borrow> borrowings = borrowService.getUserBorrowHistory(userId);
+        List<BorrowDTO> borrowings = borrowService.getUserBorrowHistory(userId);
         return ResponseEntity.ok(borrowings);
     }
 
-
-
-
     @PreAuthorize("hasAuthority('ROLE_LIBRARIAN')")
     @GetMapping("/overdue")
-    public ResponseEntity<List<Borrow>> getOverdueBooks() {
-        List<Borrow> overdueBooks = borrowService.getOverdueBooks();
+    public ResponseEntity<List<BorrowDTO>> getOverdueBooks() {
+        List<BorrowDTO> overdueBooks = borrowService.getOverdueBooks();
         return ResponseEntity.ok(overdueBooks);
     }
 

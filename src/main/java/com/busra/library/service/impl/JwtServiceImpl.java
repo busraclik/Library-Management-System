@@ -44,7 +44,6 @@ public class JwtServiceImpl implements JwtService {
         return (username.equals(userDetails.getUsername()) && !exportToken(jwt, Claims::getExpiration).before(new Date()));
     }
 
-    //ekledim
     @Override
     public String extractRole(String token) {
         return exportToken(token, claims -> claims.get("role", String.class));
@@ -54,7 +53,6 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public String generateToken(UserDetails user) {
 
-        //ekledim--
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", user.getAuthorities().stream()
                 .findFirst().get().getAuthority());

@@ -1,25 +1,64 @@
 package com.busra.library.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
+    public ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex) {
+
+        log.warn("Validation error: {}", ex.getMessage(), ex);
+
+        List<String> details = new ArrayList<>();
 
         ex.getBindingResult().getFieldErrors().forEach(error -> {
-            errors.put(error.getField(), error.getDefaultMessage());
+            String message = error.getField() + ": " + error.getDefaultMessage();
+            details.add(message);
         });
 
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        ErrorResponse errorResponse = new ErrorResponse("Validation failed.", details);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<?> handleUserNotFound(UserNotFoundException ex) {
+
+        log.error("User not found: {}", ex.getMessage(), ex);
+
+        List<String> detail = new ArrayList<>();
+        detail.add(ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse("User not found.", detail);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BookNotFoundException.class)
+    public ResponseEntity<?> handleBookNotFound(BookNotFoundException ex) {
+        log.error("Book not found: {}", ex.getMessage(), ex);
+        List<String> detail = new ArrayList<>();
+        detail.add(ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse("Book not found.", detail);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BorrowRestrictionException.class)
+    public ResponseEntity<?> handleBorrowRestrictionException(BorrowRestrictionException ex) {
+
+        log.warn("Borrow restriction: {}", ex.getMessage(), ex);
+
+        List<String> detail = new ArrayList<>();
+        detail.add(ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse("Borrow restriction.", detail);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+
 }

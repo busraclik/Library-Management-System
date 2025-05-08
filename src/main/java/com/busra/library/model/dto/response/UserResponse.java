@@ -1,4 +1,4 @@
-package com.busra.library.model.dto;
+package com.busra.library.model.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

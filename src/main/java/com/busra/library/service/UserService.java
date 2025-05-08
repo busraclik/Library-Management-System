@@ -1,6 +1,7 @@
 package com.busra.library.service;
 
-import com.busra.library.model.dto.UserDTO;
+import com.busra.library.model.dto.UserRequestDTO;
+import com.busra.library.model.dto.UserResponseDTO;
 import com.busra.library.model.entity.User;
 
 
@@ -8,13 +9,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    List<UserDTO> getAllUsers();
+    List<UserResponseDTO> getAllUsers();
 
-    UserDTO getUserById(Long id);
+    UserResponseDTO getUserById(Long id);
 
-    UserDTO updateUser(Long id, UserDTO userDTO);
+    UserResponseDTO updateUser(Long id, UserRequestDTO userRequestDTO);
 
-    void deleteUser(Long id);
+    void deleteUserById(Long id);
 
     Optional<User> findByUsername(String currentUsername);
 }

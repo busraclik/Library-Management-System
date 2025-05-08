@@ -1,6 +1,7 @@
 package com.busra.library.controller;
 
-import com.busra.library.model.dto.UserDTO;
+import com.busra.library.model.dto.UserRequestDTO;
+import com.busra.library.model.dto.UserResponseDTO;
 import com.busra.library.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,34 +19,33 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    //@PreAuthorize("hasRole('LIBRARIAN')")
     @PreAuthorize("hasAuthority('ROLE_LIBRARIAN')")
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/{id}")
     //@PreAuthorize("hasRole('LIBRARIAN')")
     @PreAuthorize("hasAuthority('ROLE_LIBRARIAN')")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @PutMapping("/{id}")
     //@PreAuthorize("hasRole('LIBRARIAN')")
     @PreAuthorize("hasAuthority('ROLE_LIBRARIAN')")
-    public ResponseEntity<UserDTO> updateUser(
+    public ResponseEntity<UserResponseDTO> updateUser(
             @PathVariable Long id,
-            @Valid @RequestBody UserDTO userDTO
+            @Valid @RequestBody UserRequestDTO userRequestDTO
     ) {
-        return ResponseEntity.ok(userService.updateUser(id, userDTO));
+        return ResponseEntity.ok(userService.updateUser(id, userRequestDTO));
     }
 
     @DeleteMapping("/{id}")
    // @PreAuthorize("hasRole('LIBRARIAN')")
     @PreAuthorize("hasAuthority('ROLE_LIBRARIAN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+        userService.deleteUserById(id);
         return ResponseEntity.noContent().build();
     }
 

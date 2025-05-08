@@ -39,7 +39,7 @@ public class BookController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookDTO> getBookById(@PathVariable Long id){
+    public ResponseEntity<BookDTO> getBookById(@PathVariable Long id) {
         return new ResponseEntity<BookDTO>(bookService.getBookById(id), HttpStatus.OK);
     }
 
@@ -91,7 +91,7 @@ public class BookController {
 
 
     @PutMapping({"/{id}"})
-    public ResponseEntity<BookDTO> updateBook(@PathVariable Long id, @Valid @RequestBody BookDTO bookDTO){
+    public ResponseEntity<BookDTO> updateBook(@PathVariable Long id, @Valid @RequestBody BookDTO bookDTO) {
         return new ResponseEntity<BookDTO>(
                 bookService.updateBook(id, bookDTO), HttpStatus.OK);
     }
