@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserResponseDTO {
 
-    private String nameSurname; //unique olmalı
+    private Long id;
+    private String nameSurname;
     private String username;
     private Role role;
 }

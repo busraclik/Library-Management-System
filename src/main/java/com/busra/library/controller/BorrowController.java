@@ -28,14 +28,14 @@ public class BorrowController {
         this.userService = userService;
     }
 
-    @PreAuthorize("hasAuthority('ROLE_PATRON')")
+    @PreAuthorize("hasAuthority('PATRON')")
     @PostMapping
     public ResponseEntity<String> borrowBook(@RequestParam Long userId, @RequestParam Long bookId) {
         String result = borrowService.borrowBook(userId, bookId);
         return ResponseEntity.ok(result);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_PATRON')")
+    @PreAuthorize("hasAuthority('PATRON')")
     @PostMapping("/return")
     public ResponseEntity<String> returnBook(@RequestParam Long userId, @RequestParam Long bookId) {
         String result = borrowService.returnBook(userId, bookId);
@@ -43,7 +43,7 @@ public class BorrowController {
     }
 
 
-    @PreAuthorize("hasAnyAuthority('ROLE_LIBRARIAN', 'ROLE_PATRON')")
+    @PreAuthorize("hasAnyAuthority('LIBRARIAN', 'PATRON')")
     @GetMapping("/history")
     public ResponseEntity<List<BorrowDTO>> getUserBorrowingHistory(
             @RequestParam Long userId,
@@ -64,7 +64,7 @@ public class BorrowController {
         return ResponseEntity.ok(borrowings);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('LIBRARIAN')")
     @GetMapping("/overdue")
     public ResponseEntity<List<BorrowDTO>> getOverdueBooks() {
         List<BorrowDTO> overdueBooks = borrowService.getOverdueBooks();

@@ -22,19 +22,28 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
 
-
-
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/swagger-ui/index.html",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs",
+                                "/v3/api-docs.yaml",
+                                "/swagger-resources/**",
+                                "/swagger-resources",
+                                "/webjars/**",
+                                "/configuration/**"
+                        ).permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/books/**").hasAnyAuthority("ROLE_LIBRARIAN", "ROLE_PATRON")
-                        .requestMatchers("/api/books/**").hasAuthority("ROLE_LIBRARIAN")
-                        .requestMatchers("/api/users/**").hasAuthority("ROLE_LIBRARIAN")
-                        .requestMatchers("/api/borrows/overdue").hasAuthority("ROLE_LIBRARIAN")
-                        .requestMatchers("/api/borrows/history").hasAnyAuthority("ROLE_LIBRARIAN", "ROLE_PATRON")
-                        .requestMatchers("/api/borrows").hasAuthority("ROLE_PATRON")
-                        .requestMatchers("/api/borrows/return").hasAuthority("ROLE_PATRON")
+                        .requestMatchers(HttpMethod.GET, "/api/books/**").hasAnyAuthority("LIBRARIAN", "PATRON")
+                        .requestMatchers("/api/users/**").hasAuthority("LIBRARIAN")
+                        .requestMatchers("/api/borrows/overdue").hasAuthority("LIBRARIAN")
+                        .requestMatchers("/api/borrows/history").hasAnyAuthority("LIBRARIAN", "PATRON")
+                        .requestMatchers("/api/borrows").hasAuthority("PATRON")
+                        .requestMatchers("/api/borrows/return").hasAuthority("PATRON")
                         .anyRequest().authenticated()
                 )
 

@@ -19,21 +19,19 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('LIBRARIAN')")
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/{id}")
-    //@PreAuthorize("hasRole('LIBRARIAN')")
-    @PreAuthorize("hasAuthority('ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('LIBRARIAN')")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @PutMapping("/{id}")
-    //@PreAuthorize("hasRole('LIBRARIAN')")
-    @PreAuthorize("hasAuthority('ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('LIBRARIAN')")
     public ResponseEntity<UserResponseDTO> updateUser(
             @PathVariable Long id,
             @Valid @RequestBody UserRequestDTO userRequestDTO
@@ -42,8 +40,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-   // @PreAuthorize("hasRole('LIBRARIAN')")
-    @PreAuthorize("hasAuthority('ROLE_LIBRARIAN')")
+    @PreAuthorize("hasAuthority('LIBRARIAN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUserById(id);
         return ResponseEntity.noContent().build();

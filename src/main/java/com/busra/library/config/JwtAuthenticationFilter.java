@@ -31,9 +31,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
         final String header = request.getHeader("Authorization");
         final String jwt;
         final String username;
+
+//        String path = request.getRequestURI();
+//        if (path.startsWith("/auth") || path.startsWith("/swagger-ui") || path.startsWith("/v3/api-docs")
+//        || path.startsWith("/swagger-ui/index.html")) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+
 
         if(header==null || !header.startsWith("Bearer ")){
             filterChain.doFilter(request, response);
@@ -45,12 +54,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (username!=null && SecurityContextHolder.getContext().getAuthentication()==null){
 
-//            UserDetails userDetails=userDetailsService.loadUserByUsername(username);
-//            if (jwtService.tokenControl(jwt, userDetails)){
-//                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null,
-//                        userDetails.getAuthorities());
 
             String role = jwtService.extractRole(jwt); // JWT'den rolü aldık
+
+            System.out.println("JWT'den çıkan rol: " + role);
+
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
             if (jwtService.tokenControl(jwt, userDetails)) {
@@ -67,4 +75,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request,response);
     }
+
 }

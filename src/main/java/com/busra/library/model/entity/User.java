@@ -25,18 +25,13 @@ public class User implements UserDetails {
     private Long id;
 
     private String nameSurname;
+    @Column(unique = true)
     private String username;
     private String password;
     private String phoneNumber;
     private String email;
     @Enumerated(EnumType.STRING)
     Role role;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        //return List.of(new SimpleGrantedAuthority(role.name()));
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
-    }
 
 
     @Override
@@ -62,5 +57,11 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
+    }
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 }

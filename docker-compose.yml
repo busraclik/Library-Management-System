@@ -16,8 +16,8 @@ services:
       - library-network
 
   app:
-    image: library-management-system
-    container_name: library-app
+    build: .  # Önemli: Dockerfile'ın bulunduğu klasör
+    container_name: library-app-2
     ports:
       - "8080:8080"
     environment:
@@ -35,5 +35,3 @@ volumes:
 networks:
   library-network:
     driver: bridge
-
-

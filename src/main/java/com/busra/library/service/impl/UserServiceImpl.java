@@ -7,9 +7,7 @@ import com.busra.library.model.entity.User;
 import com.busra.library.model.mapper.UserMapper;
 import com.busra.library.repository.UserRepository;
 import com.busra.library.service.UserService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
