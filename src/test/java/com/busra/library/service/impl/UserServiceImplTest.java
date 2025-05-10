@@ -3,7 +3,9 @@ package com.busra.library.service.impl;
 import com.busra.library.exception.UserNotFoundException;
 import com.busra.library.model.dto.UserRequestDTO;
 import com.busra.library.model.dto.UserResponseDTO;
+import com.busra.library.model.dto.request.UserRequest;
 import com.busra.library.model.entity.User;
+import com.busra.library.model.enums.Role;
 import com.busra.library.model.mapper.UserMapper;
 import com.busra.library.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,8 +40,9 @@ class UserServiceImplTest {
         user.setId(1L);
         user.setUsername("testuser");
 
-        userRequestDTO = new UserRequestDTO();
+        userRequestDTO = new UserRequestDTO("busra", "123456", "TEST", Role.LIBRARIAN, "54565565956565", "TEST@TEST");
         userRequestDTO.setUsername("testuser");
+
 
         userResponseDTO = new UserResponseDTO();
         userResponseDTO.setId(1L);
@@ -77,15 +80,19 @@ class UserServiceImplTest {
 
     @Test
     void updateUser_ShouldSaveAndReturnUpdatedDTO() {
+        Long userId = 1L;
+
+        when(userRepository.existsById(userId)).thenReturn(true); // eksikti
         when(userMapper.userRequestDtoToUser(userRequestDTO)).thenReturn(user);
         when(userRepository.save(user)).thenReturn(user);
         when(userMapper.userToUserResponseDTO(user)).thenReturn(userResponseDTO);
 
-        UserResponseDTO result = userService.updateUser(1L, userRequestDTO);
+        UserResponseDTO result = userService.updateUser(userId, userRequestDTO);
 
-        assertEquals(1L, result.getId());
+        assertEquals(userId, result.getId());
         assertEquals("testuser", result.getUsername());
     }
+
 
     @Test
     void deleteUserById_ShouldDeleteUser_WhenExists() {

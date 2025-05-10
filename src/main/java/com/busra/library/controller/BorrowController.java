@@ -51,11 +51,9 @@ public class BorrowController {
     ) {
         String currentUsername = authentication.getName();
 
-        // Kullanıcıyı veritabanından çekiyoruz
         User currentUser = userService.findByUsername(currentUsername)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        // Eğer kullanıcı PATRON ise sadece kendi geçmişini görüntüleyebilir
         if (currentUser.getRole().equals(Role.PATRON) && !currentUser.getId().equals(userId)) {
             return ResponseEntity.status(403).build();
         }

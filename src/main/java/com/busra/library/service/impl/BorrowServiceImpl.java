@@ -49,8 +49,8 @@ public class BorrowServiceImpl implements BorrowService {
 
         // overdue book control
         if (borrowRepository.existsByUserAndReturnedFalse(user.get())) {
-            throw new BorrowRestrictionException("You have an overdue book-13" +
-                    ". Please return it before borrowing a new one.!");
+            throw new BorrowRestrictionException("You have an overdue book." +
+                    " Please return it before borrowing a new one.!");
         }
 
         if (!book.get().isAvailable()) {

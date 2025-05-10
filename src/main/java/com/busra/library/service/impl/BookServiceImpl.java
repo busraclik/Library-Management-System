@@ -1,5 +1,6 @@
 package com.busra.library.service.impl;
 
+import com.busra.library.exception.BookNotFoundException;
 import com.busra.library.model.dto.BookDTO;
 import com.busra.library.model.entity.Book;
 import com.busra.library.model.mapper.BookMapper;
@@ -32,7 +33,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDTO getBookById(Long id) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found with id: " + id));
+                .orElseThrow(() -> new BookNotFoundException("Book not found with id: " + id));
         return bookMapper.bookToBookDTO(book);
     }
 
@@ -84,6 +85,10 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void deleteBookById(Long id) {
+        //bookRepository.deleteById(id);
+        if (!bookRepository.existsById(id)) {
+            throw new BookNotFoundException("Book not found with id: " + id);
+        }
         bookRepository.deleteById(id);
     }
 

@@ -32,7 +32,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         boolean existsByUsername = userRepository.existsByUsername(userRequestDTO.getUsername());
 
-        log.info("kayıt islemi basladı: {}  -- {}", userRequestDTO.getUsername(), existsByUsername);
+        log.info("save attempt: {}  -- {}", userRequestDTO.getUsername(), existsByUsername);
 
         if (existsByUsername) {
             log.warn("Attempt to register with existing username: {}", userRequestDTO.getUsername());

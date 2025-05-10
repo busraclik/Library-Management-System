@@ -37,17 +37,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDTO updateUser(Long id, UserRequestDTO userRequestDTO) {
+
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException("User not found with id: " + id);
+        }
         User user = userMapper.userRequestDtoToUser(userRequestDTO);
         user.setId(id);
         User saveUser = userRepository.save(user);
         return userMapper.userToUserResponseDTO(saveUser);
+
     }
 
-
-//    @Override
-//    public void deleteUser(Long id) {
-//        userRepository.deleteById(id);
-//    }
 
     public void deleteUserById(Long id) {
         User user = userRepository.findById(id)
