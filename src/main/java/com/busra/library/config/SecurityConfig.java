@@ -39,6 +39,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/books/**").hasAnyAuthority("LIBRARIAN", "PATRON")
+                        .requestMatchers(HttpMethod.PATCH, "/api/reactive/books/{id}/availability").hasAnyAuthority("LIBRARIAN")
                         .requestMatchers("/api/users/**").hasAuthority("LIBRARIAN")
                         .requestMatchers("/api/borrows/overdue").hasAuthority("LIBRARIAN")
                         .requestMatchers("/api/borrows/history").hasAnyAuthority("LIBRARIAN", "PATRON")

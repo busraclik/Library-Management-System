@@ -1,8 +1,6 @@
 package com.busra.library.controller;
 
-import com.busra.library.exception.BookNotFoundException;
 import com.busra.library.model.dto.BookDTO;
-import com.busra.library.model.entity.Book;
 import com.busra.library.service.BookService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,9 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -89,7 +84,6 @@ public class BookControllerTest {
     }
 
 
-
     @Test
     public void testGetBookById() throws Exception {
         BookDTO bookDTO = BookDTO.builder()
@@ -139,8 +133,6 @@ public class BookControllerTest {
 
         verify(bookService, times(1)).deleteBookById(1L);
     }
-
-
 
 
 }

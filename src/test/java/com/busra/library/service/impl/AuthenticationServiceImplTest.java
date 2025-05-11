@@ -73,7 +73,7 @@ class AuthenticationServiceImplTest {
                 .role(Role.valueOf("PATRON"))
                 .build();
 
-        when(authenticationManager.authenticate(any(Authentication.class))).thenReturn(null); // Sadece başarılı olsun yeterli
+        when(authenticationManager.authenticate(any(Authentication.class))).thenReturn(null);
         when(userRepository.findByUsername("busra")).thenReturn(Optional.of(user));
         when(jwtService.generateToken(user)).thenReturn("token123");
 

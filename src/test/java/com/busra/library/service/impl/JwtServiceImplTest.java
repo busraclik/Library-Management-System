@@ -24,7 +24,7 @@ class JwtServiceImplTest {
     void setUp() throws Exception {
         jwtService = new JwtServiceImpl();
 
-        // secret key'i manuel ayarlıyoruz çünkü @Value testte çalışmaz
+        //manuel secret key
         Field field = JwtServiceImpl.class.getDeclaredField("SECRET_KEY");
         field.setAccessible(true);
         field.set(jwtService, java.util.Base64.getEncoder().encodeToString(secretKey.getBytes(StandardCharsets.UTF_8)));
@@ -36,7 +36,7 @@ class JwtServiceImplTest {
     void generateToken_ShouldReturnValidJwt() {
         String token = jwtService.generateToken(userDetails);
         assertNotNull(token);
-        assertTrue(token.startsWith("ey")); // JWT genelde 'eyJ...' ile başlar
+        assertTrue(token.startsWith("ey"));
     }
 
     @Test

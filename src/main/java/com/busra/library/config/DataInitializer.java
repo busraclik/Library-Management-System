@@ -66,7 +66,7 @@ public class DataInitializer implements CommandLineRunner {
                         .author(sampleBooks[i][1])
                         .isbn(sampleBooks[i][2])
                         .genre(sampleBooks[i][3])
-                        .publishedDate(LocalDateTime.now().minusYears(2 + i)) // geçmişe göre yayım tarihi
+                        .publishedDate(LocalDateTime.now().minusYears(2 + i))
                         .available(true)
                         .build();
                 bookRepository.save(book);
@@ -76,7 +76,7 @@ public class DataInitializer implements CommandLineRunner {
 
         if (borrowRepository.count() == 0) {
             User user = userRepository.findByUsername("patronuser").orElseThrow();
-            Book book = bookRepository.findAll().get(0);
+            Book book = bookRepository.findAll().get(3);
 
             book.setAvailable(false);
             bookRepository.save(book);

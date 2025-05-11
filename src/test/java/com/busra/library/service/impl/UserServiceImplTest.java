@@ -82,7 +82,7 @@ class UserServiceImplTest {
     void updateUser_ShouldSaveAndReturnUpdatedDTO() {
         Long userId = 1L;
 
-        when(userRepository.existsById(userId)).thenReturn(true); // eksikti
+        when(userRepository.existsById(userId)).thenReturn(true);
         when(userMapper.userRequestDtoToUser(userRequestDTO)).thenReturn(user);
         when(userRepository.save(user)).thenReturn(user);
         when(userMapper.userToUserResponseDTO(user)).thenReturn(userResponseDTO);
