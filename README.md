@@ -38,10 +38,6 @@ This project aims to develop a comprehensive **Library Management System** using
 ## API Endpoints
 The system exposes RESTful API endpoints for each feature, accessible via HTTP methods (GET, POST, PUT, DELETE). You can find the API documentation in Swagger/OpenAPI format.
 
-## Repository
-You can find the source code for the project on GitHub:
-
-[Library Management System Repository](https://github.com/busraclik/Library-Management-System)
 
 ## Running the Application
 
