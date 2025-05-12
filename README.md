@@ -104,6 +104,8 @@ API Documentation
 After running the application, you can explore the available API endpoints through Swagger. Visit http://localhost:8080/swagger-ui.html to view the API documentation.
 Postman Collection
 
+## Postman Collection
+
 You can also explore and test the API with the pre-configured Postman collection:
 
-Library Management System Postman Collection
+[Library Management System Postman Collection](https://www.postman.com/busraclik/library-management-system/collection/zo0ama1/library-management-project?action=share&creator=28859079)
