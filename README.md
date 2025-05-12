@@ -1,4 +1,4 @@
-# Library-Management-System
+# Library Management System
 Library Management System with Spring Boot
 
 ## Project Overview
@@ -38,6 +38,11 @@ This project aims to develop a comprehensive **Library Management System** using
 ## API Endpoints
 The system exposes RESTful API endpoints for each feature, accessible via HTTP methods (GET, POST, PUT, DELETE). You can find the API documentation in Swagger/OpenAPI format.
 
+## Repository
+You can find the source code for the project on GitHub:
+
+[Library Management System Repository](https://github.com/busraclik/Library-Management-System)
+
 ## Running the Application
 
 ### Prerequisites
@@ -45,7 +50,6 @@ The system exposes RESTful API endpoints for each feature, accessible via HTTP m
 - **Docker Compose** (to manage both the database and application containers)
 
 The application is containerized. Docker Compose will automatically build and run the application, along with the PostgreSQL database.
-
 
 ### Instructions
 1. **Clone the repository**:
@@ -98,3 +102,8 @@ Unit and integration tests are written using Spring Boot Test. The application w
 API Documentation
 
 After running the application, you can explore the available API endpoints through Swagger. Visit http://localhost:8080/swagger-ui.html to view the API documentation.
+Postman Collection
+
+You can also explore and test the API with the pre-configured Postman collection:
+
+Library Management System Postman Collection
