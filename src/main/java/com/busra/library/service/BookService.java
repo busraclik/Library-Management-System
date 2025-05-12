@@ -1,6 +1,7 @@
 package com.busra.library.service;
 
 import com.busra.library.model.dto.BookDTO;
+import com.busra.library.model.dto.BookRequestDTO;
 import com.busra.library.model.entity.Book;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +18,7 @@ public interface BookService {
 
     Page<BookDTO> searchBookByGenre(String genre, int page, int size);
 
-    BookDTO createNewBook(BookDTO bookDTO);
+    BookDTO createNewBook(BookRequestDTO bookRequestDTO);
 
     BookDTO updateBook(Long id, BookDTO bookDTO);
 

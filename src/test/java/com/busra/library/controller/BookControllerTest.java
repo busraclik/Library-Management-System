@@ -49,7 +49,7 @@ public class BookControllerTest {
                 .available(true)
                 .build();
 
-        when(bookService.createNewBook(any(BookDTO.class))).thenReturn(bookDTO);
+        when(bookService.createNewBook(any(com.busra.library.model.dto.BookRequestDTO.class))).thenReturn(bookDTO);
 
         mockMvc.perform(post("/api/books")
                         .contentType("application/json")
@@ -133,6 +133,8 @@ public class BookControllerTest {
 
         verify(bookService, times(1)).deleteBookById(1L);
     }
+
+
 
 
 }

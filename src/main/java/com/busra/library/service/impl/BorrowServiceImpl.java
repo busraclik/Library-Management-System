@@ -15,10 +15,10 @@ import com.busra.library.service.BorrowService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 
 @Service
 public class BorrowServiceImpl implements BorrowService {
@@ -35,57 +35,49 @@ public class BorrowServiceImpl implements BorrowService {
         this.borrowMapper = borrowMapper;
     }
 
-
     public String borrowBook(Long userId, Long bookId) {
-        Optional<User> user = userRepository.findById(userId);
-        Optional<Book> book = bookRepository.findById(bookId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("This user is not in the list"));
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException("This book is not in the list"));
 
-        if (user.isEmpty()) {
-            throw new UserNotFoundException("This user is not in the list");
-        }
-        if (book.isEmpty()) {
-            throw new BookNotFoundException("This book is not in the list");
-        }
 
-        // overdue book control
-        if (borrowRepository.existsByUserAndReturnedFalse(user.get())) {
-            throw new BorrowRestrictionException("You have an overdue book." +
-                    " Please return it before borrowing a new one.!");
+        if (hasOverdueBooks(user)) {
+            throw new BorrowRestrictionException("You have an overdue book. Please return it before borrowing a new one.");
         }
 
-        if (!book.get().isAvailable()) {
+        if (!book.isAvailable()) {
             return "Book is not available!";
         }
 
         Borrow borrow = Borrow.builder()
-                .user(user.get())
-                .book(book.get())
+                .user(user)
+                .book(book)
                 .borrowDate(LocalDate.now())
                 .dueDate(LocalDate.now().plusDays(14))
                 .returned(false)
                 .build();
 
-        book.get().setAvailable(false);
+        book.setAvailable(false);
 
         borrowRepository.save(borrow);
-        bookRepository.save(book.get());
+        bookRepository.save(book);
 
         return "Book borrowed successfully!";
     }
 
+    // overdue book check
+    private boolean hasOverdueBooks(User user) {
+        return borrowRepository.existsByUserAndReturnedFalseAndDueDateBefore(user, LocalDate.now());
+    }
 
     public String returnBook(Long userId, Long bookId) {
-        Optional<User> user = userRepository.findById(userId);
-        Optional<Book> book = bookRepository.findById(bookId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found!"));
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException("Book not found!"));
 
-        if (user.isEmpty()) {
-            return "User not found!";
-        }
-        if (book.isEmpty()) {
-            return "Book not found!";
-        }
-
-        Optional<Borrow> borrow = borrowRepository.findByUserAndBookAndReturnedFalse(user.get(), book.get());
+        Optional<Borrow> borrow = borrowRepository.findByUserAndBookAndReturnedFalse(user, book);
 
         if (borrow.isEmpty()) {
             return "This book was not borrowed by the user!";
@@ -95,15 +87,13 @@ public class BorrowServiceImpl implements BorrowService {
         currentBorrow.setReturned(true);
         borrowRepository.save(currentBorrow);
 
-        book.get().setAvailable(true);
-        bookRepository.save(book.get());
+        book.setAvailable(true);
+        bookRepository.save(book);
 
         return "Book returned successfully!";
     }
 
-
     public List<BorrowDTO> getUserBorrowHistory(Long userId) {
-
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
 
@@ -114,12 +104,10 @@ public class BorrowServiceImpl implements BorrowService {
     }
 
     public List<BorrowDTO> getOverdueBooks() {
-
         LocalDate today = LocalDate.now();
         return borrowRepository.findByDueDateBeforeAndReturnedFalse(today)
                 .stream()
                 .map(borrowMapper::borrowToBorrowDTO)
                 .collect(Collectors.toList());
     }
-
 }

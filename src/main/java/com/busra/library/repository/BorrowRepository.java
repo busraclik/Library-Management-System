@@ -20,4 +20,5 @@ public interface BorrowRepository extends JpaRepository<Borrow, Long> {
 
     boolean existsByUserAndReturnedFalse(User user);
 
+    boolean existsByUserAndReturnedFalseAndDueDateBefore(User user, LocalDate now);
 }

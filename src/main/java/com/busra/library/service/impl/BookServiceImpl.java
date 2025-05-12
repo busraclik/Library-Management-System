@@ -2,8 +2,10 @@ package com.busra.library.service.impl;
 
 import com.busra.library.exception.BookNotFoundException;
 import com.busra.library.model.dto.BookDTO;
+import com.busra.library.model.dto.BookRequestDTO;
 import com.busra.library.model.entity.Book;
 import com.busra.library.model.mapper.BookMapper;
+import com.busra.library.model.mapper.BookRequestMapper;
 import com.busra.library.repository.BookRepository;
 import com.busra.library.service.BookService;
 import org.springframework.data.domain.Page;
@@ -17,10 +19,11 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
-
-    public BookServiceImpl(BookRepository bookRepository, BookMapper bookMapper) {
+    private final BookRequestMapper bookRequestMapper;
+    public BookServiceImpl(BookRepository bookRepository, BookMapper bookMapper, BookRequestMapper bookRequestMapper) {
         this.bookRepository = bookRepository;
         this.bookMapper = bookMapper;
+        this.bookRequestMapper = bookRequestMapper;
     }
 
     @Override
@@ -66,8 +69,8 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public BookDTO createNewBook(BookDTO bookDTO) {
-        return saveAndReturnDTO(bookMapper.bookDtoToBook(bookDTO));
+    public BookDTO createNewBook(BookRequestDTO bookRequestDTO) {
+        return saveAndReturnDTO(bookRequestMapper.bookRequestDtoToBook(bookRequestDTO));
     }
 
     private BookDTO saveAndReturnDTO(Book book) {
@@ -85,7 +88,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void deleteBookById(Long id) {
-        //bookRepository.deleteById(id);
         if (!bookRepository.existsById(id)) {
             throw new BookNotFoundException("Book not found with id: " + id);
         }

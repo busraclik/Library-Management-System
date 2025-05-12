@@ -42,7 +42,7 @@ class AuthenticationServiceImplTest {
         UserRequestDTO dto = UserRequestDTO.builder()
                 .username("busra")
                 .password("pass123")
-                .nameSurname("Busra K")
+                .nameSurname("Busra C")
                 .role(Role.valueOf("LIBRARIAN"))
                 .build();
 

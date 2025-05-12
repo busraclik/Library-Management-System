@@ -35,5 +35,6 @@ public class Book {
     private String genre;
 
     @Column(name = "available")
+    @Builder.Default
     private boolean available = true;
 }

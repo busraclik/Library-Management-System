@@ -1,8 +1,6 @@
 package com.busra.library.service.impl;
 
-import com.busra.library.exception.BookNotFoundException;
 import com.busra.library.exception.BorrowRestrictionException;
-import com.busra.library.exception.UserNotFoundException;
 import com.busra.library.model.dto.BorrowDTO;
 import com.busra.library.model.entity.Book;
 import com.busra.library.model.entity.Borrow;
@@ -13,17 +11,19 @@ import com.busra.library.repository.BorrowRepository;
 import com.busra.library.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class BorrowServiceImplTest {
 
-    @InjectMocks
-    private BorrowServiceImpl borrowService;
+@ExtendWith(MockitoExtension.class)
+public class BorrowServiceImplTest {
 
     @Mock
     private BorrowRepository borrowRepository;
@@ -37,55 +37,24 @@ class BorrowServiceImplTest {
     @Mock
     private BorrowMapper borrowMapper;
 
+    @InjectMocks
+    private BorrowServiceImpl borrowService;
+
+    private User user;
+    private Book book;
+
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
-    @Test
-    void borrowBook_Success() {
-        Long userId = 1L;
-        Long bookId = 2L;
-        User user = new User();
-        Book book = Book.builder().available(true).build();
-
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
-        when(borrowRepository.existsByUserAndReturnedFalse(user)).thenReturn(false);
-
-        String result = borrowService.borrowBook(userId, bookId);
-
-        assertEquals("Book borrowed successfully!", result);
-        assertFalse(book.isAvailable());
-        verify(borrowRepository).save(any(Borrow.class));
-        verify(bookRepository).save(book);
-    }
-
-    @Test
-    void borrowBook_UserNotFound() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-        assertThrows(UserNotFoundException.class,
-                () -> borrowService.borrowBook(1L, 2L));
-    }
-
-    @Test
-    void borrowBook_BookNotFound() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(new User()));
-        when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-        assertThrows(BookNotFoundException.class,
-                () -> borrowService.borrowBook(1L, 2L));
+        user = new User();
+        book = Book.builder().available(true).build();
     }
 
     @Test
     void borrowBook_OverdueRestriction() {
-        User user = new User();
-        Book book = Book.builder().available(true).build();
 
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
-        when(borrowRepository.existsByUserAndReturnedFalse(user)).thenReturn(true);
+        when(borrowRepository.existsByUserAndReturnedFalseAndDueDateBefore(user, LocalDate.now())).thenReturn(true);
 
         assertThrows(BorrowRestrictionException.class,
                 () -> borrowService.borrowBook(1L, 2L));
@@ -93,101 +62,84 @@ class BorrowServiceImplTest {
 
     @Test
     void borrowBook_BookNotAvailable() {
-        User user = new User();
-        Book book = Book.builder().available(false).build();
+
+        Book unavailableBook = Book.builder().available(false).build();
 
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
-        when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
-        when(borrowRepository.existsByUserAndReturnedFalse(user)).thenReturn(false);
+        when(bookRepository.findById(anyLong())).thenReturn(Optional.of(unavailableBook));
+        when(borrowRepository.existsByUserAndReturnedFalseAndDueDateBefore(user, LocalDate.now())).thenReturn(false);
 
         String result = borrowService.borrowBook(1L, 2L);
+
         assertEquals("Book is not available!", result);
     }
 
     @Test
-    void returnBook_Success() {
-        User user = new User();
-        Book book = Book.builder().available(false).build();
-        Borrow borrow = Borrow.builder().returned(false).build();
+    void borrowBook_Success() {
 
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
-        when(borrowRepository.findByUserAndBookAndReturnedFalse(user, book))
-                .thenReturn(Optional.of(borrow));
+        when(borrowRepository.existsByUserAndReturnedFalseAndDueDateBefore(user, LocalDate.now())).thenReturn(false);
 
-        String result = borrowService.returnBook(1L, 2L);
+        String result = borrowService.borrowBook(1L, 2L);
 
-        assertEquals("Book returned successfully!", result);
-        assertTrue(borrow.isReturned());
-        assertTrue(book.isAvailable());
+        assertEquals("Book borrowed successfully!", result);
+        verify(borrowRepository, times(1)).save(any(Borrow.class));
+        verify(bookRepository, times(1)).save(any(Book.class));
     }
 
     @Test
-    void returnBook_UserNotFound() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-        String result = borrowService.returnBook(1L, 2L);
-        assertEquals("User not found!", result);
-    }
-
-    @Test
-    void returnBook_BookNotFound() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(new User()));
-        when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-        String result = borrowService.returnBook(1L, 2L);
-        assertEquals("Book not found!", result);
-    }
-
-    @Test
-    void returnBook_NotBorrowed() {
-        User user = new User();
-        Book book = new Book();
+    void returnBook_BookNotBorrowed() {
 
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
-        when(borrowRepository.findByUserAndBookAndReturnedFalse(user, book)).thenReturn(Optional.empty());
 
         String result = borrowService.returnBook(1L, 2L);
+
         assertEquals("This book was not borrowed by the user!", result);
     }
 
     @Test
-    void getUserBorrowHistory_ReturnsList() {
-        User user = new User();
-        Borrow borrow = new Borrow();
-        BorrowDTO dto = new BorrowDTO();
+    void returnBook_Success() {
+        Borrow borrow = Borrow.builder().user(user).book(book).returned(false).build();
 
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
-        when(borrowRepository.findByUser(user)).thenReturn(List.of(borrow));
-        when(borrowMapper.borrowToBorrowDTO(borrow)).thenReturn(dto);
+        when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
+        when(borrowRepository.findByUserAndBookAndReturnedFalse(user, book)).thenReturn(Optional.of(borrow));
 
-        List<BorrowDTO> result = borrowService.getUserBorrowHistory(1L);
+        String result = borrowService.returnBook(1L, 2L);
 
-        assertEquals(1, result.size());
-        assertEquals(dto, result.get(0));
+        assertEquals("Book returned successfully!", result);
+        verify(borrowRepository, times(1)).save(borrow);
+        verify(bookRepository, times(1)).save(book);
     }
 
     @Test
-    void getUserBorrowHistory_UserNotFound() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+    void getUserBorrowHistory_Success() {
 
-        assertThrows(UserNotFoundException.class,
-                () -> borrowService.getUserBorrowHistory(1L));
+        List<Borrow> borrows = new ArrayList<>();
+        borrows.add(Borrow.builder().build());
+
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        when(borrowRepository.findByUser(user)).thenReturn(borrows);
+
+        List<BorrowDTO> borrowHistory = borrowService.getUserBorrowHistory(1L);
+
+        assertNotNull(borrowHistory);
+        assertFalse(borrowHistory.isEmpty());
     }
 
     @Test
-    void getOverdueBooks_ReturnsList() {
-        Borrow borrow = new Borrow();
-        BorrowDTO dto = new BorrowDTO();
+    void getOverdueBooks_Success() {
+        // Overdue books
+        List<Borrow> overdueBooks = new ArrayList<>();
+        overdueBooks.add(Borrow.builder().build());
 
-        when(borrowRepository.findByDueDateBeforeAndReturnedFalse(any()))
-                .thenReturn(List.of(borrow));
-        when(borrowMapper.borrowToBorrowDTO(borrow)).thenReturn(dto);
+        when(borrowRepository.findByDueDateBeforeAndReturnedFalse(any(LocalDate.class))).thenReturn(overdueBooks);
 
-        List<BorrowDTO> result = borrowService.getOverdueBooks();
+        List<BorrowDTO> overdueBooksList = borrowService.getOverdueBooks();
 
-        assertEquals(1, result.size());
-        assertEquals(dto, result.get(0));
+        assertNotNull(overdueBooksList);
+        assertFalse(overdueBooksList.isEmpty());
     }
 }

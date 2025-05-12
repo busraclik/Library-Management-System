@@ -1,3 +1,4 @@
+
 package com.busra.library.config;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
@@ -38,16 +39,22 @@ public class SecurityConfig {
                                 "/configuration/**"
                         ).permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/books/**").hasAnyAuthority("LIBRARIAN", "PATRON")
-                        .requestMatchers(HttpMethod.PATCH, "/api/reactive/books/{id}/availability").hasAnyAuthority("LIBRARIAN")
+                        .requestMatchers(HttpMethod.POST, "/api/books").hasAuthority("LIBRARIAN")
+                        .requestMatchers(HttpMethod.PUT, "/api/books/**").hasAuthority("LIBRARIAN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasAuthority("LIBRARIAN")
+                        .requestMatchers(HttpMethod.GET, "/api/books/search/**").hasAnyAuthority("LIBRARIAN", "PATRON")
+                        .requestMatchers(HttpMethod.GET, "/api/books/{id}").hasAnyAuthority("LIBRARIAN", "PATRON")
+                        .requestMatchers(HttpMethod.GET, "/api/books").hasAnyAuthority("LIBRARIAN", "PATRON")
+                        .requestMatchers(HttpMethod.PATCH, "/api/reactive/books/{id}/availability").hasAuthority("LIBRARIAN")
                         .requestMatchers("/api/users/**").hasAuthority("LIBRARIAN")
                         .requestMatchers("/api/borrows/overdue").hasAuthority("LIBRARIAN")
-                        .requestMatchers("/api/borrows/history").hasAnyAuthority("LIBRARIAN", "PATRON")
-                        .requestMatchers("/api/borrows").hasAuthority("PATRON")
-                        .requestMatchers("/api/borrows/return").hasAuthority("PATRON")
+                        .requestMatchers(HttpMethod.GET, "/api/borrows/history").hasAnyAuthority("LIBRARIAN", "PATRON")
+                        .requestMatchers(HttpMethod.POST, "/api/borrows", "/api/borrows/return").hasAuthority("PATRON")
+                        .requestMatchers(HttpMethod.GET, "/api/borrows/users/me/borrow-history").hasAuthority("PATRON")
+                        .requestMatchers(HttpMethod.GET, "/api/borrows/users/{userId}/borrow-history").hasAuthority("LIBRARIAN")
+                        .requestMatchers(HttpMethod.GET, "/api/borrows/overdue").hasAuthority("LIBRARIAN")
                         .anyRequest().authenticated()
                 )
-
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
@@ -55,5 +62,4 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
 }

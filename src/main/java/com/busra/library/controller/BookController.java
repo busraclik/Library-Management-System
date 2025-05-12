@@ -1,6 +1,7 @@
 package com.busra.library.controller;
 
 import com.busra.library.model.dto.BookDTO;
+import com.busra.library.model.dto.BookRequestDTO;
 import com.busra.library.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -23,12 +24,14 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<BookDTO> createNewBook(@Valid @RequestBody BookDTO bookDTO) {
-        return new ResponseEntity<>(bookService.createNewBook(bookDTO), HttpStatus.CREATED);
+    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    public ResponseEntity<BookDTO> createNewBook(@Valid @RequestBody BookRequestDTO bookRequestDTO) {
+        return new ResponseEntity<>(bookService.createNewBook(bookRequestDTO), HttpStatus.CREATED);
     }
 
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('LIBRARIAN', 'PATRON')")
     public ResponseEntity<Page<BookDTO>> getAllBooks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
@@ -39,6 +42,7 @@ public class BookController {
 
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('LIBRARIAN', 'PATRON')")
     public ResponseEntity<BookDTO> getBookById(@PathVariable Long id) {
         return new ResponseEntity<BookDTO>(bookService.getBookById(id), HttpStatus.OK);
     }
@@ -87,6 +91,7 @@ public class BookController {
 
 
     @PutMapping({"/{id}"})
+    @PreAuthorize("hasAuthority('LIBRARIAN')")
     public ResponseEntity<BookDTO> updateBook(@PathVariable Long id, @Valid @RequestBody BookDTO bookDTO) {
         return new ResponseEntity<BookDTO>(
                 bookService.updateBook(id, bookDTO), HttpStatus.OK);
@@ -94,6 +99,7 @@ public class BookController {
 
 
     @DeleteMapping({"/{id}"})
+    @PreAuthorize("hasAuthority('LIBRARIAN')")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         bookService.deleteBookById(id);
         return new ResponseEntity<Void>(HttpStatus.OK);

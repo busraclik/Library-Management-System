@@ -3,7 +3,6 @@ package com.busra.library.config;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.Contact;
-import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
@@ -16,14 +15,14 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
                 version = "1.0",
                 description = "API Documentation for Library Management System",
                 contact = @Contact(
-                        name = "Busra",
-                        email = "contact@busra.com",
-                        url = "https://busra.com"
-                ),
-                license = @License(
-                        name = "License",
-                        url = "https://some-url.com"
+                        name = "Busra Celik",
+                        email = "rabusracelik@gmail.com"
                 )
+//                ,
+//                license = @License(
+//                        name = "License",
+//                        url = "https://some-url.com"
+//                )
         ),
         servers = {
                 @Server(

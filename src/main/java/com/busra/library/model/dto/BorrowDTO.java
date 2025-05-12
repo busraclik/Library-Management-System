@@ -16,5 +16,6 @@ public class BorrowDTO {
     private BookDTO book;
     private LocalDate borrowDate;
     private LocalDate dueDate;
+    @Builder.Default
     private boolean returned = false;
 }

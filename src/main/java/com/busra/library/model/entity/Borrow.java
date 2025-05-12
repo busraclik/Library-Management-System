@@ -32,5 +32,6 @@ public class Borrow {
     private LocalDate borrowDate;
     private LocalDate dueDate;
 
+    @Builder.Default
     private boolean returned = false;
 }

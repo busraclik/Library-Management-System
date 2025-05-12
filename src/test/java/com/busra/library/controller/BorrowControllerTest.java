@@ -2,7 +2,6 @@ package com.busra.library.controller;
 
 import com.busra.library.model.dto.BorrowDTO;
 import com.busra.library.model.entity.User;
-import com.busra.library.model.enums.Role;
 import com.busra.library.service.BorrowService;
 import com.busra.library.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,17 +36,20 @@ public class BorrowControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
+
     @Test
     void borrowBook_ShouldReturnSuccess() {
         // Arrange
-        Long userId = 1L;
         Long bookId = 2L;
         String expectedResponse = "Book borrowed successfully";
 
-        when(borrowService.borrowBook(userId, bookId)).thenReturn(expectedResponse);
+        User mockUser = new User();
+        mockUser.setId(1L);
+
+        when(borrowService.borrowBook(mockUser.getId(), bookId)).thenReturn(expectedResponse);
 
         // Act
-        ResponseEntity<String> response = borrowController.borrowBook(userId, bookId);
+        ResponseEntity<String> response = borrowController.borrowBook(bookId, mockUser);
 
         // Assert
         assertEquals(200, response.getStatusCodeValue());
@@ -56,14 +59,16 @@ public class BorrowControllerTest {
     @Test
     void returnBook_ShouldReturnSuccess() {
         // Arrange
-        Long userId = 1L;
         Long bookId = 2L;
         String expectedResponse = "Book returned successfully";
 
-        when(borrowService.returnBook(userId, bookId)).thenReturn(expectedResponse);
+        User mockUser = new User();
+        mockUser.setId(1L);
+
+        when(borrowService.returnBook(mockUser.getId(), bookId)).thenReturn(expectedResponse);
 
         // Act
-        ResponseEntity<String> response = borrowController.returnBook(userId, bookId);
+        ResponseEntity<String> response = borrowController.returnBook(bookId, mockUser);
 
         // Assert
         assertEquals(200, response.getStatusCodeValue());
@@ -71,44 +76,23 @@ public class BorrowControllerTest {
     }
 
     @Test
-    void getUserBorrowingHistory_ShouldReturnForbidden_WhenUserIsPatronAndNotTheSame() {
+    void getOwnBorrowingHistory_ShouldReturnSuccess() {
         // Arrange
         Long userId = 1L;
-        String currentUsername = "user";
         User currentUser = mock(User.class);
-        when(authentication.getName()).thenReturn(currentUsername);
-        when(userService.findByUsername(currentUsername)).thenReturn(java.util.Optional.of(currentUser));
-        when(currentUser.getRole()).thenReturn(Role.PATRON);
-        when(currentUser.getId()).thenReturn(2L);
-
-        // Act
-        ResponseEntity<List<BorrowDTO>> response = borrowController.getUserBorrowingHistory(userId, authentication);
-
-        // Assert
-        assertEquals(403, response.getStatusCodeValue());
-    }
-
-    @Test
-    void getUserBorrowingHistory_ShouldReturnSuccess() {
-        // Arrange
-        Long userId = 1L;
-        String currentUsername = "user";
-        User currentUser = mock(User.class);
-        when(authentication.getName()).thenReturn(currentUsername);
-        when(userService.findByUsername(currentUsername)).thenReturn(java.util.Optional.of(currentUser));
-        when(currentUser.getRole()).thenReturn(Role.PATRON);
         when(currentUser.getId()).thenReturn(userId);
 
         List<BorrowDTO> borrowDTOList = Collections.singletonList(mock(BorrowDTO.class));
         when(borrowService.getUserBorrowHistory(userId)).thenReturn(borrowDTOList);
 
         // Act
-        ResponseEntity<List<BorrowDTO>> response = borrowController.getUserBorrowingHistory(userId, authentication);
+        ResponseEntity<List<BorrowDTO>> response = borrowController.getOwnBorrowingHistory(currentUser);
 
         // Assert
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(borrowDTOList, response.getBody());
     }
+
 
     @Test
     void getOverdueBooks_ShouldReturnSuccess() {

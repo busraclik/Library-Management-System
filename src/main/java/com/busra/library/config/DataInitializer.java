@@ -56,7 +56,7 @@ public class DataInitializer implements CommandLineRunner {
                     {"Atomic Habits", "James Clear", "9780735211292", "Self-help"},
                     {"Sapiens", "Yuval Noah Harari", "9780062316097", "History"},
                     {"The Alchemist", "Paulo Coelho", "9780061122415", "Fiction"},
-                    {"The Subtle Art of Not Giving a F*ck", "Mark Manson", "9780062457714", "Self-help"},
+                    {"The Subtle Art", "Mark Manson", "9780062457714", "Self-help"},
                     {"Normal People", "Sally Rooney", "9780571334650", "Drama"}
             };
 

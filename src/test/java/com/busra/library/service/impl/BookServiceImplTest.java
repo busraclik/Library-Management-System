@@ -1,20 +1,22 @@
 package com.busra.library.service.impl;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import com.busra.library.exception.BookNotFoundException;
 import com.busra.library.model.dto.BookDTO;
+import com.busra.library.model.dto.BookRequestDTO;
 import com.busra.library.model.entity.Book;
 import com.busra.library.model.mapper.BookMapper;
+import com.busra.library.model.mapper.BookRequestMapper;
 import com.busra.library.repository.BookRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.data.domain.*;
 
 import java.util.*;
-
-import static org.mockito.Mockito.*;
 
 class BookServiceImplTest {
 
@@ -24,11 +26,15 @@ class BookServiceImplTest {
     @Mock
     BookMapper bookMapper;
 
+    @Mock
+    BookRequestMapper bookRequestMapper;
+
     @InjectMocks
     BookServiceImpl bookService;
 
     Book book;
     BookDTO bookDTO;
+    BookRequestDTO bookRequestDTO;
 
     @BeforeEach
     void setUp() {
@@ -44,6 +50,13 @@ class BookServiceImplTest {
 
         bookDTO = BookDTO.builder()
                 .id(1L)
+                .title("Test Book")
+                .author("Author Name")
+                .isbn("123456789")
+                .genre("Fiction")
+                .build();
+
+        bookRequestDTO = BookRequestDTO.builder()
                 .title("Test Book")
                 .author("Author Name")
                 .isbn("123456789")
@@ -136,11 +149,11 @@ class BookServiceImplTest {
 
     @Test
     void createNewBook_shouldSaveAndReturnBookDTO() {
-        when(bookMapper.bookDtoToBook(bookDTO)).thenReturn(book);
+        when(bookRequestMapper.bookRequestDtoToBook(bookRequestDTO)).thenReturn(book);
         when(bookRepository.save(book)).thenReturn(book);
         when(bookMapper.bookToBookDTO(book)).thenReturn(bookDTO);
 
-        BookDTO result = bookService.createNewBook(bookDTO);
+        BookDTO result = bookService.createNewBook(bookRequestDTO);
 
         assertEquals("Test Book", result.getTitle());
     }
