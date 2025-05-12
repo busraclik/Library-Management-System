@@ -105,3 +105,20 @@ Postman Collection
 You can also explore and test the API with the pre-configured Postman collection:
 
 [Library Management System Postman Collection](https://www.postman.com/busraclik/library-management-system/collection/zo0ama1/library-management-project?action=share&creator=28859079)
+
+## NOTE: Data Initialization
+
+To populate the system with sample data, the DataInitializer class is implemented as a CommandLineRunner. This class automatically runs when the application starts and adds some initial data to the database.
+Sample Data:
+
+    Users: It creates two users:
+
+        Librarian User: A librarian with administrative privileges.
+
+        Patron User: A user who can borrow books.
+
+    Books: Ten sample books are added to the database, including titles like The Silent Patient, Educated, The Midnight Library, etc.
+
+    Borrow Records: A sample borrowing record is created for the patron, who borrows a book.
+
+This initializer will only run once when the application is first started if there are no existing users or books in the database.
