@@ -35,6 +35,13 @@ This project aims to develop a comprehensive **Library Management System** using
 - **View Borrowing History**: Users can view their borrowing history, while librarians can view all users' histories.
 - **Manage Overdue Books**: The system tracks overdue books, and librarians can generate overdue book list.
 
+
+### Database Schema
+Below is the schema of the Library Management System database:
+![Database Schema](src/main/resources/templates/database-schema.png)
+
+
+
 ## API Endpoints
 The system exposes RESTful API endpoints for each feature, accessible via HTTP methods (GET, POST, PUT, DELETE). You can find the API documentation in Swagger/OpenAPI format.
 
